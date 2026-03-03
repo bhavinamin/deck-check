@@ -156,7 +156,11 @@ function sendDiscordNotification(statuses) {
   }
 
   const payload = JSON.stringify({
+    allowed_mentions: {
+      parse: ["everyone"],
+    },
     content: [
+      "@here",
       "Steam Deck stock detected:",
       ...statuses.map(
         (status) => `- ${status.sourceLabel}: ${status.product} (${timestamp()})`

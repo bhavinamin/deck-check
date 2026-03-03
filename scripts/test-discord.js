@@ -12,7 +12,11 @@ function sendDiscordTestNotification() {
   }
 
   const payload = JSON.stringify({
+    allowed_mentions: {
+      parse: ["everyone"],
+    },
     content: [
+      "@here",
       "Steam Deck notifier test",
       `Timestamp: ${timestamp()}`,
       "This is a manual webhook smoke test from GitHub Actions.",
