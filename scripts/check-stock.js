@@ -70,6 +70,14 @@ function normalizeText(text) {
   return text.replace(/\s+/g, " ").trim();
 }
 
+function previewText(text, maxLength = 240) {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return `${text.slice(0, maxLength)}...`;
+}
+
 function parseStatuses(pageText, source) {
   const statuses = [];
 
@@ -210,6 +218,7 @@ function sendDiscordNotification(statuses) {
   let browser;
   const errors = [];
   const inStockStatuses = [];
+  let recognizedSources = 0;
 
   try {
     browser = await puppeteer.launch({
@@ -229,10 +238,16 @@ function sendDiscordNotification(statuses) {
         const statuses = parseStatuses(pageText, source);
 
         if (statuses.length === 0) {
-          throw new Error(
-            `No recognizable Steam Deck inventory statuses found on ${source.key} page.`
+          console.warn(
+            [
+              `No recognizable Steam Deck inventory statuses found on ${source.key} page.`,
+              `Page text preview: ${previewText(pageText)}`,
+            ].join(" ")
           );
+          continue;
         }
+
+        recognizedSources += 1;
 
         const sourceInStockStatuses = statuses.filter((status) => status.isInStock);
 
@@ -255,6 +270,11 @@ function sendDiscordNotification(statuses) {
 
     if (inStockStatuses.length > 0) {
       await sendDiscordNotification(inStockStatuses);
+    }
+
+    if (recognizedSources === 0 && errors.length === 0) {
+      console.error("No recognizable Steam Deck inventory statuses found on any enabled source.");
+      process.exitCode = 1;
     }
 
     if (errors.length > 0) {
