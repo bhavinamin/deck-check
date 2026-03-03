@@ -1,0 +1,15 @@
+{
+  "name": "steamdeck-stock-scraper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scheduled stock checker for Steam Deck refurbished and retail listings.",
+  "scripts": {
+    "check-stock": "node scripts/check-stock.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "puppeteer": "^24.3.0"
+  }
+}

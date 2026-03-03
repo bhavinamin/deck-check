@@ -1,98 +1,32 @@
+name: Check Steam Deck Inventory
+
 on:
   push:
   workflow_dispatch:
   schedule:
-    - cron: '*/60 * * * *'
+    - cron: "0 * * * *"
+
+concurrency:
+  group: steamdeck-stock-check
+  cancel-in-progress: true
 
 jobs:
   scheduled:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-    - name: Check out this repo
-      uses: actions/checkout@v4
+      - name: Check out this repo
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-    - name: Install Puppeteer
-      run: npm install puppeteer
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Create Node.js script for Puppeteer
-      run: |-
-        cat << 'EOF' > fetchPage.js
-        const fs = require("fs");
-        const puppeteer = require("puppeteer");
-        
-        (async () => {
-          try {
-            const browser = await puppeteer.launch({
-              args: ["--no-sandbox", "--disable-setuid-sandbox"],
-            });
-            const page = await browser.newPage();
-            await page.goto(
-              "https://store.steampowered.com/sale/steamdeckrefurbished/",
-              { waitUntil: "networkidle0" }
-            );
-        
-            await page.focus("div.CartBtn");
-            const btns = await page.$$("div.CartBtn");
-        
-            let result = [];
-            for (let t of btns) {
-              result.push(
-                await t.evaluate(
-                  (x) =>
-                    x.parentElement.parentElement.parentElement.parentElement
-                      .textContent
-                )
-              );
-            }
-        
-            const isOled512gbAvailable = result.some(
-              (x) => x.includes("Steam Deck 512 GB OLED") && x.includes("Add to cart")
-            );
-        
-            console.log({ result });
-        
-            if (isOled512gbAvailable) {
-              console.log("Oled in stock!");
-              const timestamp = new Date().toISOString();
-              fs.appendFileSync(
-                "in_stock.txt",
-                `OLED 512GB in stock at ${timestamp}\n`
-              );
-            } else {
-              console.log("No oled in stock.");
-            }
-        
-            await browser.close();
-          } catch (error) {
-            const timestamp = new Date().toISOString();
-            fs.appendFileSync(
-              "error.txt",
-              `Error at: ${timestamp} - ${error.message}\n`
-            );
-            console.error(error);
-          }
-        })();
-
-        EOF
-
-    - name: Run Puppeteer script
-      run: node fetchPage.js
-
-    - name: Commit and push changes
-      run: |-
-        git config user.name "Automated"
-        git config user.email "actions@users.noreply.github.com"
-        git add in_stock.txt error.txt || true
-        
-        if git diff --cached --quiet; then
-          echo "No changes in in_stock.txt or error.txt. Exiting."
-          exit 0
-        fi
-        
-        git commit -m "Automated update at $(date +"%Y/%m/%d %H:%M")"
-        git push
+      - name: Run stock check
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: npm run check-stock
