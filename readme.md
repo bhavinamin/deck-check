@@ -12,6 +12,7 @@ The workflow:
 - runs the stock checker script at `scripts/check-stock.js`
 - sends a Discord notification when stock is detected
 - fails in GitHub Actions when scraping or notification delivery fails
+- includes a separate manual workflow to smoke-test Discord delivery
 
 The stock checker:
 - uses Puppeteer on a GitHub-hosted runner
@@ -22,10 +23,13 @@ The stock checker:
 
 Project files:
 - `.github/workflows/steamdeck.yml`: scheduled GitHub Actions workflow
+- `.github/workflows/test-discord.yml`: manual Discord webhook smoke test
 - `package.json`: Node project metadata and dependencies
 - `scripts/check-stock.js`: inventory detection logic
+- `scripts/test-discord.js`: standalone Discord webhook smoke test
 
 Notes:
 - Retail page detection is based on rendered page text and broad DOM heuristics, so selector tuning may still be needed if Steam changes markup.
 - Add a repository secret named `DISCORD_WEBHOOK_URL` before enabling notifications.
 - Without persistent state, the workflow will notify on every run where stock is still available.
+- Run the `Test Discord Notification` workflow from the Actions tab to verify the webhook independently of stock availability.

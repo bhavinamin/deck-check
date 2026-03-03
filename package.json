@@ -4,7 +4,8 @@
   "private": true,
   "description": "Scheduled stock checker for Steam Deck refurbished and retail listings.",
   "scripts": {
-    "check-stock": "node scripts/check-stock.js"
+    "check-stock": "node scripts/check-stock.js",
+    "test-notification": "node scripts/test-discord.js"
   },
   "engines": {
     "node": ">=20"
