@@ -1,13 +1,13 @@
 # Steam Deck availability scraper
 
-This repository runs a GitHub Actions workflow that checks Steam Deck inventory on a schedule using Puppeteer.
+This repository runs a GitHub Actions workflow that checks Steam Deck inventory using Puppeteer.
 
 It currently checks two Steam storefront pages:
 - Refurbished inventory: `https://store.steampowered.com/sale/steamdeckrefurbished/`
 - Retail inventory: `https://store.steampowered.com/steamdeck/`
 
 The workflow:
-- runs on push, manual dispatch, and hourly on a schedule
+- runs on push and manual dispatch
 - installs Node.js 20 and project dependencies
 - runs the stock checker script at `scripts/check-stock.js`
 - sends a Discord notification when stock is detected
@@ -22,7 +22,7 @@ The stock checker:
 - posts one aggregated Discord webhook message for any in-stock SKUs found in that run
 
 Project files:
-- `.github/workflows/steamdeck.yml`: scheduled GitHub Actions workflow
+- `.github/workflows/steamdeck.yml`: stock check workflow
 - `.github/workflows/test-discord.yml`: manual Discord webhook smoke test
 - `package.json`: Node project metadata and dependencies
 - `scripts/check-stock.js`: inventory detection logic

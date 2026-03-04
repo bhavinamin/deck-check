@@ -3,8 +3,6 @@ name: Check Steam Deck Inventory
 on:
   push:
   workflow_dispatch:
-  schedule:
-    - cron: "2/5 * * * *"
 
 concurrency:
   group: steamdeck-stock-check
@@ -25,9 +23,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Add randomized delay
-        run: sleep $((60 + RANDOM % 61))
 
       - name: Run stock check
         env:
