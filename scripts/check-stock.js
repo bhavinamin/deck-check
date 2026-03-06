@@ -3,40 +3,40 @@ const puppeteer = require("puppeteer");
 
 const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || "";
 const ENABLED_SOURCES = new Set(
-  (process.env.STEAMDECK_SOURCES || "refurbished,retail")
+  (process.env.STEAMDECK_SOURCES || "retail")
     .split(",")
     .map((value) => value.trim().toLowerCase())
     .filter(Boolean)
 );
 
 const SOURCES = [
-  {
-    key: "refurbished",
-    label: "Refurbished",
-    url: "https://store.steampowered.com/sale/steamdeckrefurbished/",
-    products: [
-      {
-        name: "Steam Deck 512 GB OLED",
-        aliases: ["Steam Deck 512 GB OLED", "Steam Deck 512GB OLED"],
-      },
-      {
-        name: "Steam Deck 1TB OLED",
-        aliases: ["Steam Deck 1TB OLED", "Steam Deck 1 TB OLED"],
-      },
-      {
-        name: "Steam Deck 64 GB LCD",
-        aliases: ["Steam Deck 64 GB LCD", "Steam Deck 64GB LCD"],
-      },
-      {
-        name: "Steam Deck 256 GB LCD",
-        aliases: ["Steam Deck 256 GB LCD", "Steam Deck 256GB LCD"],
-      },
-      {
-        name: "Steam Deck 512 GB LCD",
-        aliases: ["Steam Deck 512 GB LCD", "Steam Deck 512GB LCD"],
-      },
-    ],
-  },
+  // {
+  //   key: "refurbished",
+  //   label: "Refurbished",
+  //   url: "https://store.steampowered.com/sale/steamdeckrefurbished/",
+  //   products: [
+  //     {
+  //       name: "Steam Deck 512 GB OLED",
+  //       aliases: ["Steam Deck 512 GB OLED", "Steam Deck 512GB OLED"],
+  //     },
+  //     {
+  //       name: "Steam Deck 1TB OLED",
+  //       aliases: ["Steam Deck 1TB OLED", "Steam Deck 1 TB OLED"],
+  //     },
+  //     {
+  //       name: "Steam Deck 64 GB LCD",
+  //       aliases: ["Steam Deck 64 GB LCD", "Steam Deck 64GB LCD"],
+  //     },
+  //     {
+  //       name: "Steam Deck 256 GB LCD",
+  //       aliases: ["Steam Deck 256 GB LCD", "Steam Deck 256GB LCD"],
+  //     },
+  //     {
+  //       name: "Steam Deck 512 GB LCD",
+  //       aliases: ["Steam Deck 512 GB LCD", "Steam Deck 512GB LCD"],
+  //     },
+  //   ],
+  // },
   {
     key: "retail",
     label: "Retail",
